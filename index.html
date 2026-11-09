@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>99 ночей в лесу</title>
+    <link rel="icon" type="image/webp" href="assets/branding/lory-engine.webp">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #222;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; }
+        img { -webkit-user-drag: none; }
+        #world3d {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            outline: none;
+            touch-action: none;
+        }
+        /* Загрузка: ночной лес у костра (без картинок — CSS и встроенный SVG). Шрифт — Rubik, как у интерфейса. */
+        @font-face { font-family: 'Rubik'; src: url('assets/fonts/rubik.ttf?v=0.1.0') format('truetype'); font-weight: 300 900; font-display: swap; }
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0b1820 0%, #0f2324 46%, #0d1a16 70%, #090d0b 100%);
+            z-index: 1000;
+            font-family: 'Rubik', system-ui, sans-serif;
+        }
+        .ls-moon { position: absolute; right: 16%; top: 11%; width: clamp(34px, 7vh, 64px); height: clamp(34px, 7vh, 64px); border-radius: 50%; background: radial-gradient(circle at 38% 36%, #f6eedb, #ddcfae 70%); box-shadow: 0 0 0 10px rgba(232, 220, 188, .05), 0 0 60px rgba(232, 220, 188, .18); }
+        .ls-fog { position: absolute; left: 0; right: 0; bottom: 18%; height: 22%; background: linear-gradient(180deg, transparent, rgba(160, 182, 170, .09) 55%, transparent); }
+        .ls-forest { position: absolute; left: 0; bottom: 0; width: 100%; height: clamp(110px, 34vh, 300px); }
+        .ls-far { fill: #10211d; bottom: 7%; height: clamp(90px, 30vh, 260px); }
+        .ls-near { fill: #070b09; }
+        .ls-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: clamp(6px, 1.6vh, 14px); padding: 0 16px; max-width: 100%; }
+        .ls-fire { position: relative; width: clamp(70px, 17vh, 130px); height: clamp(70px, 17vh, 130px); }
+        .ls-fire svg { width: 100%; height: 100%; overflow: visible; }
+        .ls-glow { position: absolute; left: 50%; bottom: -6%; width: 260%; height: 60%; transform: translateX(-50%); background: radial-gradient(ellipse at 50% 60%, rgba(232, 132, 59, .26), transparent 70%); pointer-events: none; }
+        .ls-fl { transform-box: fill-box; transform-origin: 50% 100%; animation: lsFlick 1.1s ease-in-out infinite alternate; }
+        .ls-fl.f2 { animation-duration: .8s; animation-delay: -.3s; }
+        .ls-fl.f3 { animation-duration: .6s; animation-delay: -.5s; }
+        @keyframes lsFlick { 0% { transform: scale(1, 1) skewX(0deg); } 35% { transform: scale(.94, 1.08) skewX(3deg); } 70% { transform: scale(1.04, .94) skewX(-2deg); } 100% { transform: scale(.97, 1.04) skewX(1deg); } }
+        .ls-ember { position: absolute; left: 50%; bottom: 46%; width: 4px; height: 4px; border-radius: 1px; background: #f6c35c; opacity: 0; animation: lsEmber 2.6s linear infinite; }
+        .ls-ember:nth-child(2) { margin-left: -14px; animation-delay: -.7s; animation-duration: 2.2s; }
+        .ls-ember:nth-child(3) { margin-left: 10px; animation-delay: -1.4s; animation-duration: 3s; }
+        .ls-ember:nth-child(4) { margin-left: -4px; animation-delay: -2s; animation-duration: 2.4s; background: #e8843b; }
+        .ls-ember:nth-child(5) { margin-left: 18px; animation-delay: -.3s; animation-duration: 2.8s; background: #e8843b; }
+        @keyframes lsEmber { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(14px, -120px) rotate(160deg); opacity: 0; } }
+        #loading-title { margin: 0; font: 900 clamp(24px, 5.4vh, 46px)/1.08 'Rubik', system-ui, sans-serif; letter-spacing: .01em; color: #f2e8d2; text-align: center; max-width: 88vw; text-shadow: 0 4px 0 #8a3d17, 0 6px 0 #120e0a; -webkit-text-stroke: 1px #120e0a; paint-order: stroke fill; }
+        .ls-meter { display: flex; align-items: center; gap: 12px; margin-top: clamp(2px, 1vh, 8px); }
+        .loading-bar {
+            position: relative;
+            width: min(300px, 64vw);
+            height: 14px;
+            background: #17120d;
+            border: 2px solid #120e0a;
+            border-radius: 5px;
+            box-shadow: inset 0 0 0 1px rgba(242, 232, 210, .08), 0 3px 0 rgba(0, 0, 0, .5);
+            overflow: hidden;
+        }
+        .loading-bar::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 2px), rgba(0, 0, 0, .35) calc(10% - 2px) 10%); pointer-events: none; }
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #9b4219, #e8843b 75%, #f6c35c);
+            box-shadow: inset 0 2px 0 rgba(255, 255, 255, .18);
+            transition: width 0.3s ease;
+        }
+        #loading-percent { min-width: 3.2em; font: 800 16px 'Rubik', system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #f2e8d2; text-align: left; }
+        .loading-text {
+            font: 500 14px 'Rubik', system-ui, sans-serif;
+            letter-spacing: .04em;
+            color: #cdbf9f;
+            text-align: center;
+            min-height: 1em;
+        }
+        #loading-retry { margin-top: 4px; padding: 10px 26px; border: 2px solid #120e0a; border-radius: 9px; background: #557f3e; color: #f2e8d2; font: 700 16px 'Rubik', system-ui, sans-serif; cursor: pointer; box-shadow: 0 4px 0 #2e4a22, 0 6px 0 #120e0a; outline: 1.5px dashed rgba(242, 232, 210, .3); outline-offset: -6px; }
+        #loading-retry:active { transform: translateY(4px); box-shadow: 0 0 0 #2e4a22, 0 2px 0 #120e0a; }
+        @media (prefers-reduced-motion: reduce) { .ls-fl, .ls-ember { animation: none; } .ls-ember { display: none; } }
+        @media (orientation: landscape) and (max-height: 420px) { .ls-moon { top: 8%; } .ls-center { gap: 4px; } }
+    </style>
+</head>
+<body>
+    <canvas id="world3d"></canvas>
+    <div id="loading-screen" role="status" aria-busy="true" aria-live="polite">
+        <i class="ls-moon" aria-hidden="true"></i>
+        <div class="ls-fog" aria-hidden="true"></div>
+        <svg class="ls-forest ls-far" viewBox="0 0 1200 240" preserveAspectRatio="none" aria-hidden="true"><path d="M0 240 L0 205 L0 205 L9 186 L20 186 L14 165 L24 165 L31 136 L39 165 L49 165 L43 186 L54 186 L63 205 L61 205 L68 179 L78 179 L72 152 L81 152 L87 113 L93 152 L102 152 L96 179 L106 179 L113 205 L105 205 L112 180 L121 180 L116 153 L124 153 L130 115 L136 153 L145 153 L140 180 L149 180 L156 205 L139 205 L149 187 L161 187 L154 168 L165 168 L173 141 L181 168 L192 168 L185 187 L197 187 L207 205 L191 205 L201 174 L213 174 L206 141 L217 141 L225 95 L233 141 L243 141 L237 174 L249 174 L258 205 L244 205 L252 178 L262 178 L257 148 L266 148 L273 107 L280 148 L289 148 L283 178 L294 178 L302 205 L308 205 L318 182 L331 182 L324 156 L336 156 L344 121 L353 156 L365 156 L358 182 L371 182 L381 205 L387 205 L395 174 L404 174 L399 140 L407 140 L413 93 L419 140 L427 140 L422 174 L431 174 L438 205 L428 205 L436 186 L446 186 L440 166 L449 166 L456 138 L462 166 L471 166 L465 186 L475 186 L483 205 L473 205 L485 185 L500 185 L491 164 L505 164 L515 134 L525 164 L538 164 L530 185 L545 185 L556 205 L553 205 L564 182 L577 182 L570 157 L582 157 L591 123 L600 157 L612 157 L605 182 L618 182 L629 205 L625 205 L632 187 L641 187 L636 168 L645 168 L651 141 L657 168 L665 168 L660 187 L669 187 L677 205 L664 205 L675 181 L689 181 L681 155 L694 155 L703 119 L712 155 L725 155 L717 181 L731 181 L742 205 L732 205 L742 181 L755 181 L748 154 L760 154 L769 118 L777 154 L789 154 L782 181 L795 181 L805 205 L795 205 L807 176 L822 176 L813 146 L827 146 L836 103 L846 146 L860 146 L851 176 L866 176 L878 205 L866 205 L876 179 L890 179 L882 152 L894 152 L903 113 L911 152 L923 152 L916 179 L929 179 L939 205 L943 205 L954 183 L969 183 L961 160 L973 160 L983 128 L993 160 L1005 160 L997 183 L1012 183 L1023 205 L1029 205 L1037 181 L1047 181 L1041 156 L1050 156 L1056 120 L1063 156 L1071 156 L1066 181 L1076 181 L1083 205 L1084 205 L1092 180 L1102 180 L1097 153 L1105 153 L1112 116 L1119 153 L1128 153 L1122 180 L1132 180 L1140 205 L1123 205 L1134 175 L1148 175 L1140 144 L1152 144 L1162 99 L1171 144 L1183 144 L1176 175 L1189 175 L1200 205 L1197 205 L1209 183 L1224 183 L1216 159 L1229 159 L1240 126 L1250 159 L1264 159 L1255 183 L1271 183 L1283 205 L1200 205 L1200 240 Z"/></svg>
+        <svg class="ls-forest ls-near" viewBox="0 0 1200 240" preserveAspectRatio="none" aria-hidden="true"><path d="M0 240 L0 232 L0 232 L16 188 L37 188 L26 141 L44 141 L58 75 L72 141 L91 141 L79 188 L100 188 L116 232 L109 232 L124 197 L143 197 L132 160 L149 160 L162 109 L175 160 L192 160 L181 197 L200 197 L215 232 L225 232 L238 203 L254 203 L245 172 L260 172 L271 129 L282 172 L297 172 L288 203 L304 203 L317 232 L300 232 L313 199 L329 199 L320 164 L334 164 L345 114 L356 164 L370 164 L361 199 L378 199 L390 232 L374 232 L385 199 L399 199 L391 164 L404 164 L414 114 L423 164 L436 164 L428 199 L443 199 L454 232 L439 232 L454 202 L474 202 L463 170 L481 170 L494 125 L507 170 L524 170 L514 202 L533 202 L549 232 L525 232 L537 194 L553 194 L544 153 L558 153 L568 96 L578 153 L592 153 L584 194 L599 194 L611 232 L599 232 L616 188 L637 188 L626 140 L645 140 L659 74 L673 140 L693 140 L681 188 L702 188 L719 232 L708 232 L719 189 L733 189 L725 144 L738 144 L748 80 L757 144 L770 144 L762 189 L776 189 L788 232 L789 232 L803 191 L821 191 L811 147 L827 147 L838 86 L850 147 L866 147 L856 191 L874 191 L888 232 L872 232 L891 187 L914 187 L901 139 L922 139 L938 71 L954 139 L975 139 L962 187 L985 187 L1003 232 L1006 232 L1025 201 L1049 201 L1036 168 L1057 168 L1073 122 L1089 168 L1111 168 L1097 201 L1121 201 L1140 232 L1134 232 L1150 188 L1172 188 L1160 140 L1179 140 L1194 74 L1208 140 L1227 140 L1215 188 L1237 188 L1253 232 L1200 232 L1200 240 Z"/></svg>
+        <div class="ls-center">
+            <div class="ls-fire" aria-hidden="true"><div class="ls-glow"></div><svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="108" rx="40" ry="7" fill="#0a0806" opacity=".7"/><g stroke="#120e0a" stroke-width="3" stroke-linejoin="round"><rect x="22" y="92" width="76" height="13" rx="6" fill="#5a3a22" transform="rotate(-14 60 98)"/><rect x="22" y="92" width="76" height="13" rx="6" fill="#6b4529" transform="rotate(14 60 98)"/></g><path class="ls-fl" d="M60 18c10 16 26 26 26 50 0 16-11 28-26 28S34 84 34 68c0-14 8-20 12-30 3 9 7 12 11 13-2-12 0-22 3-33z" fill="#d9692a" stroke="#120e0a" stroke-width="3" stroke-linejoin="round"/><path class="ls-fl f2" d="M61 44c6 10 15 15 15 30 0 10-7 18-16 18s-15-8-15-17c0-9 5-13 8-19 2 5 4 7 7 7-1-7 0-13 1-19z" fill="#f2a641"/><path class="ls-fl f3" d="M60 64c3 6 8 9 8 17 0 6-4 10-8 10s-8-4-8-9c0-6 4-9 6-13 0 2 1 3 2 3z" fill="#fff0c4"/></svg><i class="ls-ember"></i><i class="ls-ember"></i><i class="ls-ember"></i><i class="ls-ember"></i><i class="ls-ember"></i></div>
+            <h1 id="loading-title">99 ночей в лесу</h1>
+            <div class="ls-meter">
+                <div class="loading-bar" id="loading-meter" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-progress"></div></div>
+                <div id="loading-percent">0%</div>
+            </div>
+            <div class="loading-text" data-t="loading"></div>
+            <button id="loading-retry" type="button" hidden></button>
+        </div>
+    </div>
+
+    <!-- Порядок значим: Constants.js первым (остальные читают его глобалы), main.js последним -->
+    <script src="https://games.pikabu.ru/sdk/sdk.js"></script>
+<script src="js/Constants.js?v=0.1.0"></script>
+    <script src="libs/simplex-noise.js?v=0.1.0"></script>
+    <script src="libs/babylon.js?v=0.1.0"></script>
+    <script src="js/Maps.js?v=0.1.0"></script>
+    <script src="js/Maps2D.js?v=0.1.0"></script>
+    <script src="js/World2D.js?v=0.1.0"></script>
+    <script src="js/World3D.js?v=0.1.0"></script>
+    <script src="js/Mist.js?v=0.1.0"></script>
+    <script src="js/Terrain3D.js?v=0.1.0"></script>
+    <script src="js/CameraControl.js?v=0.1.0"></script>
+    <script src="js/Model3D.js?v=0.1.0"></script>
+    <script src="js/ModelFBX.js?v=0.1.0"></script>
+    <script src="js/ModelOBJ.js?v=0.1.0"></script>
+    <script src="js/ModelGLTF.js?v=0.1.0"></script>
+    <script src="js/Location3D.js?v=0.1.0"></script>
+    <script src="js/Pause.js?v=0.1.0"></script>
+    <script src="js/Sound.js?v=0.1.0"></script>
+    <script src="js/Lang.js?v=0.1.0"></script>
+    <script src="js/Lang2.js?v=0.1.0"></script>
+    <script src="js/Lang3.js?v=0.1.0"></script>
+    <script src="js/Platform.js?v=0.1.0"></script>
+    <script src="js/PlatformPikabu.js?v=0.1.0"></script>
+    <script src="js/LoadingScreen.js?v=0.1.0"></script>
+    <script src="js/ParticleFX.js?v=0.1.0"></script>
+    <!-- Скрипты игры (js/Game.js и её модули) — здесь, до main.js -->
+    <script src="js/Util.js?v=0.1.0"></script>
+    <script src="js/Data.js?v=0.1.0"></script>
+    <script src="js/Skins.js?v=0.1.0"></script>
+    <script src="js/Econ.js?v=0.1.0"></script>
+    <script src="js/Ach.js?v=0.1.0"></script>
+    <script src="js/Save.js?v=0.1.0"></script>
+    <script src="js/Rig.js?v=0.1.0"></script>
+    <script src="js/Input.js?v=0.1.0"></script>
+    <script src="js/Sky.js?v=0.1.0"></script>
+    <script src="js/World.js?v=0.1.0"></script>
+    <script src="js/Cam.js?v=0.1.0"></script>
+    <script src="js/Items.js?v=0.1.0"></script>
+    <script src="js/Player.js?v=0.1.0"></script>
+    <script src="js/Player2.js?v=0.1.0"></script>
+    <script src="js/FX.js?v=0.1.0"></script>
+    <script src="js/AttackFX.js?v=0.1.0"></script>
+    <script src="js/Archery.js?v=0.1.0"></script>
+    <script src="js/Synth.js?v=0.1.0"></script>
+    <script src="js/Sfx.js?v=0.1.0"></script>
+    <script src="js/Combat.js?v=0.1.0"></script>
+    <script src="js/Interact.js?v=0.1.0"></script>
+    <script src="js/Camp.js?v=0.1.0"></script>
+    <script src="js/Zones.js?v=0.1.0"></script>
+    <script src="js/Lore.js?v=0.1.0"></script>
+    <script src="js/Enemies.js?v=0.1.0"></script>
+    <script src="js/UI.js?v=0.1.0"></script>
+    <script src="js/Icons.js?v=0.1.0"></script>
+    <script src="js/UIPanels.js?v=0.1.0"></script>
+    <script src="js/Panels2.js?v=0.1.0"></script>
+    <script src="js/Panels3.js?v=0.1.0"></script>
+    <script src="js/MapView.js?v=0.1.0"></script>
+    <script src="js/Panels4.js?v=0.1.0"></script>
+    <script src="js/UiFX.js?v=0.1.0"></script>
+    <script src="js/HudLayout.js?v=0.1.0"></script>
+    <script src="js/Quests.js?v=0.1.0"></script>
+    <script src="js/Bots.js?v=0.1.0"></script>
+    <script src="js/Events.js?v=0.1.0"></script>
+    <script src="js/Game.js?v=0.1.0"></script>
+    <script src="js/main.js?v=0.1.0"></script>
+    <script>
+        // Игровая область: долгий тап и ПКМ не открывают меню браузера, картинки не
+        // тянутся, текст не выделяется — кроме настоящих полей ввода.
+        (() => {
+            const isField = t => t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable);
+            for (const type of ['contextmenu', 'dragstart', 'selectstart']) {
+                document.addEventListener(type, e => { if (!isField(e.target)) e.preventDefault(); });
+            }
+        })();
+    </script>
+</body>
+</html>

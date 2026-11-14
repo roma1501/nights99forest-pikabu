@@ -1,5 +1,5 @@
-// Skins.js — каталог косметики: 5 тематических категорий по 8 скинов. Ровно половина скинов открывается за монеты,
-// половина — за рекламу (от 1 до 5 просмотров, чем реже скин, тем больше). Скин = набор цветов + аксессуары на костях
+// Skins.js — каталог косметики: 5 тематических категорий по 8 мест (в Космосе и Фэнтези по одному месту пустому — скин снят,
+// см. retired). Чётные места открываются за монеты, нечётные — за рекламу (от 1 до 5 просмотров, чем реже скин, тем больше). Скин = набор цветов + аксессуары на костях
 // героя (узлы Acc_* в player.glb; нет узла в модели — скин просто без этой детали).
 // colors: hair / shirt / jacket / pants / skin (тон кожи) и accA / accB / accC — цвета материалов аксессуаров.
 
@@ -20,6 +20,9 @@ const SKINS = {
         legend: { coins: 1800, ads: [5, 5], color: '#ffb020', name: ['Легендарный', 'Legendary'] },
     },
     items: [],
+    // Снятые скины: id -> монеты, которые возвращаются купившим (Econ.load). Сняты по замечанию сертификации Playables
+    // 2026-11-10 — сходство с чужими персонажами; в каталог не возвращать.
+    retired: { pilot: 350, elf: 350 },
 };
 
 (function () {
@@ -38,7 +41,7 @@ const SKINS = {
         // ---- Космос
         ['astronaut', 'space', ['Астронавт', 'Astronaut'], 'common', '#2b1c14', '#f1f1f4', '#f1f1f4', '#d8d8e0', null, ['astro_helmet', 'jetpack'], ['#cfe8ff', '#ff7a2a', '#8a8a92'], null],
         ['alien', 'space', ['Инопланетянин', 'Alien'], 'common', '#7fff9a', '#4a2a7a', '#3a1f5a', '#2a1a4a', '#a6d8a0', ['antennae'], ['#7fff9a', '#ff4fd8', '#ffe066'], null],
-        ['pilot', 'space', ['Звёздный пилот', 'Star Pilot'], 'rare', '#3a2a1a', '#2a4a8a', '#ff7a2a', '#23253a', null, ['retro_helmet', 'belt'], ['#ffd24a', '#2a4a8a', '#ffffff'], null],
+        ['', 'space'],   // снятый скин: пустое место сохраняет очерёдность монеты/реклама у соседей
         ['robot', 'space', ['Робот', 'Robot'], 'rare', '#8a8a92', '#7d8592', '#5a6270', '#3a4150', '#b8c0cc', ['robot_visor', 'antennae'], ['#ff3b3b', '#cfd6e0', '#3bffb0'], null],
         ['moonbunny', 'space', ['Лунный кролик', 'Moon Bunny'], 'epic', '#f1f1f4', '#e0d8ff', '#b8a8ff', '#6a5aa8', '#f7dcc0', ['bunny_ears', 'scarf'], ['#f1f1f4', '#ffb8e8', '#b8a8ff'], 'Hair_pony'],
         ['cosmonaut', 'space', ['Космонавт', 'Cosmonaut'], 'epic', '#2b1c14', '#d8423a', '#e8e8ea', '#d8d8e0', null, ['retro_helmet', 'jetpack'], ['#d8423a', '#e8e8ea', '#ffe066'], null],
@@ -47,7 +50,7 @@ const SKINS = {
         // ---- Фэнтези
         ['knight', 'fantasy', ['Рыцарь', 'Knight'], 'common', '#3a2a1a', '#8a8a92', '#b8c0cc', '#5a6270', null, ['knight_helm', 'sword_back'], ['#b8c0cc', '#d8423a', '#8a5a2a'], null],
         ['wizard', 'fantasy', ['Волшебник', 'Wizard'], 'common', '#e8e8ea', '#3a4aa8', '#2a2a7a', '#23253a', null, ['wizard_hat', 'cape'], ['#3a4aa8', '#ffd24a', '#b46bff'], 'Hair_short'],
-        ['elf', 'fantasy', ['Эльф', 'Elf'], 'rare', '#f2d16a', '#4a8a52', '#3a6a4a', '#5a4a32', '#f7dcc0', ['elf_circlet', 'quiver'], ['#ffd24a', '#4a8a52', '#8a5a2a'], 'Hair_pony'],
+        ['', 'fantasy'],   // снятый скин
         ['paladin', 'fantasy', ['Паладин', 'Paladin'], 'rare', '#d0902a', '#e8e8ea', '#ffd24a', '#8a8a92', null, ['knight_helm', 'cape'], ['#ffd24a', '#e8e8ea', '#d8423a'], null],
         ['dragon', 'fantasy', ['Драконий воин', 'Dragon Warrior'], 'epic', '#d8423a', '#7a1a1a', '#b02a2a', '#3a1a1a', '#c68b60', ['dragon_horns', 'wings_bat'], ['#d8423a', '#ffb020', '#2b1c14'], 'Hair_short'],
         ['archmage', 'fantasy', ['Архимаг', 'Archmage'], 'epic', '#c8c8ff', '#5a2aa8', '#7a3ad0', '#2a1a5a', null, ['wizard_hat', 'cape', 'scarf'], ['#7a3ad0', '#ffd24a', '#6affff'], 'Hair_short'],
@@ -77,6 +80,7 @@ const SKINS = {
         const [id, theme, name, rarity, hair, shirt, jacket, pants, skin, acc, ac, hairStyle] = r;
         const k = cnt[theme] = (cnt[theme] || 0);
         cnt[theme]++;
+        if (!id) continue;
         const R = SKINS.rarity[rarity];
         // чётные номера в теме — за монеты, нечётные — за рекламу (ровно 50 на 50)
         const byCoins = k % 2 === 0;

@@ -13,9 +13,17 @@ const Econ = {
         this.hearts = m.hearts != null ? Math.max(0, Math.min(DATA.lives.max, m.hearts | 0)) : DATA.lives.max;
         this.owned = Object.assign({ default: true }, m.owned || {});
         this.ads = m.ads || {};
+        // снятые скины: купленный за монеты — цена назад; владение и просмотры рекламы за него стираются
+        let refund = 0;
+        for (const id in SKINS.retired) {
+            if (this.owned[id]) refund += SKINS.retired[id];
+            delete this.owned[id]; delete this.ads[id];
+        }
+        this.coins += refund;
         this.skin = SKINS.byId[m.skin] && this.owned[m.skin] ? m.skin : 'default';
         this.earned = m.earned | 0;
         this._lastHeartDay = m.lhd | 0;
+        if (refund) this.save();
     },
     save() { Store.set(this.key(), JSON.stringify({ coins: this.coins, hearts: this.hearts, owned: this.owned, ads: this.ads, skin: this.skin, earned: this.earned, lhd: this._lastHeartDay })); },
 

@@ -44,7 +44,7 @@ const ITEM_RENDER_CHUNK = 1600;     // px: spatial cell for ground-item thin ins
 const ITEM_RENDER_CAPACITY = 16;    // initial dense slots per ground-item render cell
 const GAME_ID = 'nights99forest';          // латиница, цифры, -: имя архива dist/<GAME_ID>-<платформа>-<версия>.zip и ключей сохранений
 const GAME_TITLE = '99 ночей в лесу';     // название игры: заголовок вкладки браузера
-const GAME_VERSION = '0.1.1';         // версия билда: ?v= у скриптов (tools/build.mjs) и имя архива
+const GAME_VERSION = '0.1.2';         // версия билда: ?v= у скриптов (tools/build.mjs) и имя архива
 const GAME_PLATFORM = 'pikabu';          // 'web' | 'yandex' | 'playables' | 'playgama' | 'crazygames' — сборка ставит свою (build.bat <платформа>)
 const GAME_LANG = 'ru';               // язык интерфейса: сборка ставит ru (yandex) или en (playables, playgama, crazygames); Lang.js
 // Название игры по площадке: { <сборка>: 'Название' } — сборка ставит его в GAME_TITLE, <title> и заставку загрузки

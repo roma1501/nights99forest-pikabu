@@ -5,7 +5,8 @@
 PikabuShop.setup({
     colors: ['#ff8a3d', '#2e7d32'],
     ready: () => !!(typeof Econ !== 'undefined' && Econ.owned && typeof Game !== 'undefined' && Game.state && Game.state !== 'boot'),
-    visible: () => Game.state === 'menu' && !(typeof UI !== 'undefined' && UI.modal),
+    // главное меню само открыто как окно 'title': на нём кнопку показываем, поверх других окон — нет
+    visible: () => Game.state === 'menu' && (typeof UI === 'undefined' || !UI.modal || UI.modal === 'title'),
     persist: () => Econ.save(),
     button: { corner: 'tr', x: 12, y: 74 },
     packs: [

@@ -31,7 +31,7 @@
             touch-action: none;
         }
         /* Загрузка: ночной лес у костра (без картинок — CSS и встроенный SVG). Шрифт — Rubik, как у интерфейса. */
-        @font-face { font-family: 'Rubik'; src: url('assets/fonts/rubik.ttf?v=0.1.1') format('truetype'); font-weight: 300 900; font-display: swap; }
+        @font-face { font-family: 'Rubik'; src: url('assets/fonts/rubik.ttf?v=0.1.2') format('truetype'); font-weight: 300 900; font-display: swap; }
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -118,72 +118,72 @@
 
     <!-- Порядок значим: Constants.js первым (остальные читают его глобалы), main.js последним -->
     <script src="https://games.pikabu.ru/sdk/sdk.js"></script>
-<script src="js/Constants.js?v=0.1.1"></script>
-    <script src="libs/simplex-noise.js?v=0.1.1"></script>
-    <script src="libs/babylon.js?v=0.1.1"></script>
-    <script src="js/Maps.js?v=0.1.1"></script>
-    <script src="js/Maps2D.js?v=0.1.1"></script>
-    <script src="js/World2D.js?v=0.1.1"></script>
-    <script src="js/World3D.js?v=0.1.1"></script>
-    <script src="js/Mist.js?v=0.1.1"></script>
-    <script src="js/Terrain3D.js?v=0.1.1"></script>
-    <script src="js/CameraControl.js?v=0.1.1"></script>
-    <script src="js/Model3D.js?v=0.1.1"></script>
-    <script src="js/ModelFBX.js?v=0.1.1"></script>
-    <script src="js/ModelOBJ.js?v=0.1.1"></script>
-    <script src="js/ModelGLTF.js?v=0.1.1"></script>
-    <script src="js/Location3D.js?v=0.1.1"></script>
-    <script src="js/Pause.js?v=0.1.1"></script>
-    <script src="js/Sound.js?v=0.1.1"></script>
-    <script src="js/Lang.js?v=0.1.1"></script>
-    <script src="js/Lang2.js?v=0.1.1"></script>
-    <script src="js/Lang3.js?v=0.1.1"></script>
-    <script src="js/Platform.js?v=0.1.1"></script>
-    <script src="js/PlatformPikabu.js?v=0.1.1"></script>
-    <script src="js/LoadingScreen.js?v=0.1.1"></script>
-    <script src="js/ParticleFX.js?v=0.1.1"></script>
+<script src="js/Constants.js?v=0.1.2"></script>
+    <script src="libs/simplex-noise.js?v=0.1.2"></script>
+    <script src="libs/babylon.js?v=0.1.2"></script>
+    <script src="js/Maps.js?v=0.1.2"></script>
+    <script src="js/Maps2D.js?v=0.1.2"></script>
+    <script src="js/World2D.js?v=0.1.2"></script>
+    <script src="js/World3D.js?v=0.1.2"></script>
+    <script src="js/Mist.js?v=0.1.2"></script>
+    <script src="js/Terrain3D.js?v=0.1.2"></script>
+    <script src="js/CameraControl.js?v=0.1.2"></script>
+    <script src="js/Model3D.js?v=0.1.2"></script>
+    <script src="js/ModelFBX.js?v=0.1.2"></script>
+    <script src="js/ModelOBJ.js?v=0.1.2"></script>
+    <script src="js/ModelGLTF.js?v=0.1.2"></script>
+    <script src="js/Location3D.js?v=0.1.2"></script>
+    <script src="js/Pause.js?v=0.1.2"></script>
+    <script src="js/Sound.js?v=0.1.2"></script>
+    <script src="js/Lang.js?v=0.1.2"></script>
+    <script src="js/Lang2.js?v=0.1.2"></script>
+    <script src="js/Lang3.js?v=0.1.2"></script>
+    <script src="js/Platform.js?v=0.1.2"></script>
+    <script src="js/PlatformPikabu.js?v=0.1.2"></script>
+    <script src="js/LoadingScreen.js?v=0.1.2"></script>
+    <script src="js/ParticleFX.js?v=0.1.2"></script>
     <!-- Скрипты игры (js/Game.js и её модули) — здесь, до main.js -->
-    <script src="js/Util.js?v=0.1.1"></script>
-    <script src="js/Data.js?v=0.1.1"></script>
-    <script src="js/Skins.js?v=0.1.1"></script>
-    <script src="js/Econ.js?v=0.1.1"></script>
-    <script src="js/Ach.js?v=0.1.1"></script>
-    <script src="js/Save.js?v=0.1.1"></script>
-    <script src="js/Rig.js?v=0.1.1"></script>
-    <script src="js/Input.js?v=0.1.1"></script>
-    <script src="js/Sky.js?v=0.1.1"></script>
-    <script src="js/World.js?v=0.1.1"></script>
-    <script src="js/Cam.js?v=0.1.1"></script>
-    <script src="js/Items.js?v=0.1.1"></script>
-    <script src="js/Player.js?v=0.1.1"></script>
-    <script src="js/Player2.js?v=0.1.1"></script>
-    <script src="js/FX.js?v=0.1.1"></script>
-    <script src="js/AttackFX.js?v=0.1.1"></script>
-    <script src="js/Archery.js?v=0.1.1"></script>
-    <script src="js/Synth.js?v=0.1.1"></script>
-    <script src="js/Sfx.js?v=0.1.1"></script>
-    <script src="js/Combat.js?v=0.1.1"></script>
-    <script src="js/Interact.js?v=0.1.1"></script>
-    <script src="js/Camp.js?v=0.1.1"></script>
-    <script src="js/Zones.js?v=0.1.1"></script>
-    <script src="js/Lore.js?v=0.1.1"></script>
-    <script src="js/Enemies.js?v=0.1.1"></script>
-    <script src="js/UI.js?v=0.1.1"></script>
-    <script src="js/Icons.js?v=0.1.1"></script>
-    <script src="js/UIPanels.js?v=0.1.1"></script>
-    <script src="js/Panels2.js?v=0.1.1"></script>
-    <script src="js/Panels3.js?v=0.1.1"></script>
-    <script src="js/MapView.js?v=0.1.1"></script>
-    <script src="js/Panels4.js?v=0.1.1"></script>
-    <script src="js/UiFX.js?v=0.1.1"></script>
-    <script src="js/HudLayout.js?v=0.1.1"></script>
-    <script src="js/Quests.js?v=0.1.1"></script>
-    <script src="js/Bots.js?v=0.1.1"></script>
-    <script src="js/Events.js?v=0.1.1"></script>
-    <script src="js/Game.js?v=0.1.1"></script>
-    <script src="js/PikabuShop.js?v=0.1.1"></script>
-    <script src="js/PikabuPacks.js?v=0.1.1"></script>
-    <script src="js/main.js?v=0.1.1"></script>
+    <script src="js/Util.js?v=0.1.2"></script>
+    <script src="js/Data.js?v=0.1.2"></script>
+    <script src="js/Skins.js?v=0.1.2"></script>
+    <script src="js/Econ.js?v=0.1.2"></script>
+    <script src="js/Ach.js?v=0.1.2"></script>
+    <script src="js/Save.js?v=0.1.2"></script>
+    <script src="js/Rig.js?v=0.1.2"></script>
+    <script src="js/Input.js?v=0.1.2"></script>
+    <script src="js/Sky.js?v=0.1.2"></script>
+    <script src="js/World.js?v=0.1.2"></script>
+    <script src="js/Cam.js?v=0.1.2"></script>
+    <script src="js/Items.js?v=0.1.2"></script>
+    <script src="js/Player.js?v=0.1.2"></script>
+    <script src="js/Player2.js?v=0.1.2"></script>
+    <script src="js/FX.js?v=0.1.2"></script>
+    <script src="js/AttackFX.js?v=0.1.2"></script>
+    <script src="js/Archery.js?v=0.1.2"></script>
+    <script src="js/Synth.js?v=0.1.2"></script>
+    <script src="js/Sfx.js?v=0.1.2"></script>
+    <script src="js/Combat.js?v=0.1.2"></script>
+    <script src="js/Interact.js?v=0.1.2"></script>
+    <script src="js/Camp.js?v=0.1.2"></script>
+    <script src="js/Zones.js?v=0.1.2"></script>
+    <script src="js/Lore.js?v=0.1.2"></script>
+    <script src="js/Enemies.js?v=0.1.2"></script>
+    <script src="js/UI.js?v=0.1.2"></script>
+    <script src="js/Icons.js?v=0.1.2"></script>
+    <script src="js/UIPanels.js?v=0.1.2"></script>
+    <script src="js/Panels2.js?v=0.1.2"></script>
+    <script src="js/Panels3.js?v=0.1.2"></script>
+    <script src="js/MapView.js?v=0.1.2"></script>
+    <script src="js/Panels4.js?v=0.1.2"></script>
+    <script src="js/UiFX.js?v=0.1.2"></script>
+    <script src="js/HudLayout.js?v=0.1.2"></script>
+    <script src="js/Quests.js?v=0.1.2"></script>
+    <script src="js/Bots.js?v=0.1.2"></script>
+    <script src="js/Events.js?v=0.1.2"></script>
+    <script src="js/Game.js?v=0.1.2"></script>
+    <script src="js/PikabuShop.js?v=0.1.2"></script>
+    <script src="js/PikabuPacks.js?v=0.1.2"></script>
+    <script src="js/main.js?v=0.1.2"></script>
     <script>
         // Игровая область: долгий тап и ПКМ не открывают меню браузера, картинки не
         // тянутся, текст не выделяется — кроме настоящих полей ввода.
